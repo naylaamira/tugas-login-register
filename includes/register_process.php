@@ -1,42 +1,51 @@
 <?php
-require_once 'config.php'; // koneksi database
+require_once 'config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST["username"];
-    $email    = $_POST["email"];
-    $password = $_POST["password"];
-    $confirm  = $_POST["confirm_password"];
+    $username = $_POST['username'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $confirm_password = $_POST['confirm_password'] ?? '';
 
-    // 1. Cek apakah username sudah ada
-    $cek_user = $conn->prepare("SELECT id FROM Users WHERE username = ?");
-    $cek_user->bind_param("s", $username);
-    $cek_user->execute();
-    $cek_user->store_result();
-
-    if ($cek_user->num_rows > 0) {
-        echo "❌ Username sudah dipakai. Silakan pilih yang lain.";
+    // Validasi data tidak boleh kosong
+    if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
+        $error = "Semua field wajib diisi!";
+        header("Location: ../register.php?error=" . urlencode($error));
         exit;
     }
 
-    // 2. Cek apakah password cocok
-    if ($password !== $confirm) {
-        echo "❌ Password dan konfirmasi tidak cocok.";
+    // Cek apakah password dan konfirmasi sama
+    if ($password !== $confirm_password) {
+        $error = "Konfirmasi password tidak cocok!";
+        header("Location: ../register.php?error=" . urlencode($error));
         exit;
     }
 
-    // 3. Simpan user baru
-    $hash = password_hash($password, PASSWORD_DEFAULT);
-    $stmt = $conn->prepare("INSERT INTO Users (username, email, password, role, created_at) VALUES (?, ?, ?, 'user', NOW())");
-    $stmt->bind_param("sss", $username, $email, $hash);
+    // Cek apakah username sudah ada
+    $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $stmt->store_result();
 
-    if ($stmt->execute()) {
-        echo "✅ Register berhasil! Silakan login.";
+    if ($stmt->num_rows > 0) {
+        $error = "Username sudah digunakan, coba yang lain.";
+        header("Location: ../register.php?error=" . urlencode($error));
+        exit;
+    }
+
+    // Insert user baru
+    $insert = $conn->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'user')");
+    $insert->bind_param("sss", $username, $email, $password);
+
+    if ($insert->execute()) {
+        // Register berhasil
+        header("Location: ../login.php?success=" . urlencode("Registrasi berhasil! Silakan login."));
+        exit;
     } else {
-        echo "❌ Terjadi kesalahan saat menyimpan data.";
+        // Gagal insert
+        $error = "Gagal melakukan registrasi.";
+        header("Location: ../register.php?error=" . urlencode($error));
+        exit;
     }
-
-    $stmt->close();
-    $cek_user->close();
-    $conn->close();
 }
 ?>

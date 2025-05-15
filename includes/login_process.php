@@ -2,42 +2,36 @@
 session_start();
 require_once 'config.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    // Cek apakah username ada di database
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
 
-    // Jika username ditemukan
-    if ($result->num_rows == 1) {
-        $user = $result->fetch_assoc();
+    $sql = "SELECT * FROM users WHERE username = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $username);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
-        // Cek apakah password cocok
-        if (password_verify($password, $user['password'])) {
-            // Login berhasil
-            $_SESSION['username'] = $user['username'];
-            header("Location: dashboard.php");
-            exit;
+    if (mysqli_num_rows($result) > 0) {
+        $user = mysqli_fetch_assoc($result);
+
+        if ($password === $user['password']) {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['role'] = $user['role'];
+   
+        header("Location: ../dashboard.php");
+        exit;
         } else {
-            // Password salah
-            $_SESSION['error'] = "Password salah!";
-            header("Location: login.php");
-            exit;
+
+            $error = "Password salah";
         }
     } else {
-        // Username tidak ditemukan
-        $_SESSION['error'] = "Username tidak ditemukan!";
-        header("Location: login.php");
-        exit;
+        $error = "Username tidak ditemukan";
     }
-} else {
-    // Jika bukan POST request
-    $_SESSION['error'] = "Akses tidak valid.";
-    header("Location: login.php");
+
+    header("Location: ../login.php?error=" . urlencode($error));
     exit;
 }
 ?>
