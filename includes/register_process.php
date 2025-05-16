@@ -1,5 +1,6 @@
 <?php
 require_once 'config.php';
+session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'] ?? '';
@@ -28,8 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $error = "Username sudah digunakan, coba yang lain.";
-        header("Location: ../register.php?error=" . urlencode($error));
+        $_SESSION['error'] = "Username sudah digunakan, coba yang lain.";
+        header("Location: ../register.php");
         exit;
     }
 
