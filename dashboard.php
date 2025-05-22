@@ -83,7 +83,7 @@ $isAdmin = ($role === 'admin');
             <?php else: ?>
             <div class="user-panel">
                 <p>Selamat datang di dashboard user.</p>
-                <a href="#" class="admin-btn">Profil Saya</a>
+                <a href="profile.php" class="admin-btn">Profil Saya</a>
                 <a href="#" class="admin-btn">Ubah Password</a>
             </div>
             <?php endif; ?>
