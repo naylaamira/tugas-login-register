@@ -68,50 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Saya</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .profile-container {
-            text-align: left;
-            padding: 20px;
-        }
-        .profile-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .profile-info {
-            margin-bottom: 30px;
-        }
-        .profile-info p {
-            margin-bottom: 10px;
-            padding: 8px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-        }
-        .profile-info strong {
-            display: inline-block;
-            width: 120px;
-        }
-        .back-btn {
-            display: inline-block;
-            padding: 8px 16px;
-            background-color: #2196f3;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            margin-top: 20px;
-        }
-        .back-btn:hover {
-            background-color: #1976d2;
-            text-decoration: none;
-        }
-        .update-form {
-            margin-top: 30px;
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
-        }
-        .update-form h3 {
-            margin-bottom: 15px;
-        }
-    </style>
+    
 </head>
 <body>
     <div class="container">
@@ -134,10 +91,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
             
             <?php if (empty($error)): ?>
             <div class="profile-info">
-                <p><strong>Username:</strong> <?= htmlspecialchars($username) ?></p>
-                <p><strong>Email:</strong> <?= htmlspecialchars($email) ?></p>
-                <p><strong>Role:</strong> <?= htmlspecialchars($role) ?></p>
-                <p><strong>Terdaftar pada:</strong> <?= htmlspecialchars($created_at) ?></p>
+                <table>
+                    <tr>
+                        <tr>
+                            <td><p><strong>Username :</strong></p></td>
+                            <td><p><?= htmlspecialchars($username) ?></p></td>
+                        </tr>
+                        <tr>
+                            <td><p><strong>Email :</strong></p></td>
+                            <td><p><?= htmlspecialchars($email) ?></p></td>
+                        </tr>
+                        <tr>
+                            <td><p><strong>Role :</strong></p></td>
+                            <td><p><?= htmlspecialchars($role) ?></p></td>
+                        </tr>
+                        <tr>
+                            <td><p><strong>Terdaftar pada :</strong></p></td>
+                            <td><p><?= htmlspecialchars($created_at) ?></p></td>
+                    </tr>
+                </table>
             </div>
             
             <div class="update-form">
@@ -152,7 +124,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_profile'])) {
             </div>
             <?php endif; ?>
             
-            <a href="dashboard.php" class="back-btn">Kembali ke Dashboard</a>
+            <div class="register-link">
+            <a href="dashboard.php">← Kembali ke Dashboard</a>
+            </div>
         </div>
     </div>
 </body>
