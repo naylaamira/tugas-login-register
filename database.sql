@@ -13,5 +13,3 @@ CREATE TABLE Users (
 
 INSERT INTO Users (username, email, password, role, created_at)
 VALUES ('admin', 'admin@gmail.com', 'admin123', 'admin', NOW());
-
-
